@@ -1,0 +1,8 @@
+﻿@{
+    ViewBag.Title = "Verification Needed";
+
+}
+
+<h2>Verification Needed</h2>
+
+<p>Your account requires email confirmation before it is enabled. Check your email. If you need us to resend that email, <a href="@Url.Action("GenerateEmailCode", new { email = ViewBag.Email })">click here</a>.</p>

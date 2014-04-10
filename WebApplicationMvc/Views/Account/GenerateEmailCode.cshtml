@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Generate Email Verification Code";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form method="post" action="@Url.Action("GenerateEmailCode")" role="form" class="form-horizontal">
+	@Html.AntiForgeryToken()
+	<fieldset>
+		<legend>Generate Code</legend>
+		<div class="form-group">
+			<label class="control-label col-md-2" for="email">Email Address</label>
+			<div class="col-md-10">
+				<input type="text" id="email" name="email" class="form-control" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-10 col-md-offset-2"><button type="submit" class="btn btn-primary">Send Email</button></div>
+		</div>
+	</fieldset>
+</form>
