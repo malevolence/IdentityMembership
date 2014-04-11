@@ -46,6 +46,8 @@ CREATE TABLE [dbo].[AspNetUsers] (
 	[Credits]								 INT			  NOT NULL,
 	[DefaultProfileId]						 INT			  NULL,
 	[IsBad]									 BIT			  NOT NULL,
+	[NotifyDirectMessages]					 BIT			  NOT NULL,
+	[NotifyAskAndAnswer]					 BIT			  NOT NULL,
     CONSTRAINT [PK_dbo.AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
@@ -72,7 +74,9 @@ INSERT INTO AspNetUsers
 	InIndustry,
 	Credits,
 	DefaultProfileId,
-	IsBad
+	IsBad,
+	NotifyDirectMessages,
+	NotifyAskAndAnswer
 )
 SELECT
 	u.UserId,
@@ -96,13 +100,17 @@ SELECT
 	ISNULL(p.InIndustry, 0),
 	ISNULL(p.Credits, 0),
 	p.DefaultProfileId,
-	ISNULL(p.IsBad, 0)
+	ISNULL(p.IsBad, 0),
+	ISNULL(c.PrivateMessages, 1),
+	ISNULL(c.AskAndAnswer, 1)
 FROM
 	aspnet_Users u
 LEFT OUTER JOIN
 	aspnet_Membership m ON u.UserId = m.UserId
 LEFT OUTER JOIN
 	aspnet_CustomProfile p ON u.UserId = p.UserID
+LEFT OUTER JOIN
+	Contact_Preferences c ON u.UserId = c.UserID
 
 CREATE TABLE [dbo].[AspNetRoles] (
     [Id]   UNIQUEIDENTIFIER NOT NULL,

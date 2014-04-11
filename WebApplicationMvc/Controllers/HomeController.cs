@@ -17,11 +17,6 @@ namespace WebApplicationMvc.Controllers
 	{
 		public ActionResult Index()
 		{
-			var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-			var roleManager = ApplicationRoleManager.Create(null, HttpContext.GetOwinContext());
-			ViewBag.Users = userManager.Users.OrderByDescending(x => x.CreateDate).Take(10).ToList();
-			ViewBag.Roles = roleManager.Roles.OrderBy(x => x.Name).ToList();
-
 			return View();
 		}
 

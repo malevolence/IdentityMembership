@@ -16,6 +16,7 @@ namespace WebApplicationMvc.Controllers
             return View();
         }
 
+
 		[HttpPost]
 		public ActionResult HashPassword(string password, string salt)
 		{

@@ -30,7 +30,7 @@ namespace WebApplicationMvc.Models
 
     public class ManageUserViewModel
     {
-		[Display(Name = "Display Name")]
+		[Display(Name = "Name")]
 		[Required, StringLength(100)]
 		public string DisplayName { get; set; }
 
@@ -38,6 +38,12 @@ namespace WebApplicationMvc.Models
 		[DataType(DataType.EmailAddress)]
 		[Display(Name = "Email Address")]
 		public string Email { get; set; }
+
+		[Display(Name = "Someone sends me a Direct Message")]
+		public bool NotifyDirectMessages { get; set; }
+		
+		[Display(Name = "Someone responds to me on Ask And Answer")]
+		public bool NotifyAskAndAnswer { get; set; }
     }
 
     public class LoginViewModel
@@ -63,7 +69,7 @@ namespace WebApplicationMvc.Models
 		public string Email { get; set; }
 
 		[Required]
-        [Display(Name = "Display name")]
+        [Display(Name = "Name")]
         public string DisplayName { get; set; }
 
         [Required]

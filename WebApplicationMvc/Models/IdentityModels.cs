@@ -20,6 +20,8 @@ namespace WebApplicationMvc.Models
 			Id = Guid.NewGuid();
 			CreateDate = DateTime.Now;
 			IsApproved = true;
+			NotifyAskAndAnswer = true;
+			NotifyDirectMessages = true;
 		}
 
 		[Display(Name = "Added On")]
@@ -46,6 +48,12 @@ namespace WebApplicationMvc.Models
 
 		[Display(Name = "Default Profile Id")]
 		public int? DefaultProfileId { get; set; }
+
+		[Display(Name = "Direct Messages")]
+		public bool NotifyDirectMessages { get; set; }
+		
+		[Display(Name = "Ask and Answer Responses")]
+		public bool NotifyAskAndAnswer { get; set; }
 
 		public Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager)
 		{
@@ -133,7 +141,8 @@ namespace WebApplicationMvc.Models
 			};
 
 			// Let's us sign-in users imported from old app
-			manager.PasswordHasher = new SqlPasswordHasher();
+			// Will automatically re-hash old passwords into the new crypto format on successful login
+			manager.PasswordHasher = new SqlPasswordHasher() { DbContext = context.Get<ApplicationDbContext>() };
 
 			manager.UserLockoutEnabledByDefault = true;
 			manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -159,7 +168,7 @@ namespace WebApplicationMvc.Models
 			var email = new MailMessage("autonotify@productionhub.com", message.Destination);
 			email.Subject = message.Subject;
 			email.Body = message.Body;
-			email.IsBodyHtml = false;
+			email.IsBodyHtml = true;
 			var smtp = new SmtpClient();
 			return smtp.SendMailAsync(email);
 		}

@@ -3,7 +3,11 @@
     ViewBag.Title = "Manage Account";
 }
 
-<h2>@ViewBag.Title</h2>
+<ul class="nav nav-tabs add-bottom-margin">
+	<li class="active"><a href="@Url.Action("Manage", "Account")">Manage Account</a></li>
+	<li><a href="@Url.Action("ChangePassword", "Account")">Change Password</a></li>
+	<li><a href="@Url.Action("MyRoles", "Account")">My Roles</a></li>
+</ul>
 
 <div class="row">
 	<div class="col-md-12">
@@ -13,34 +17,39 @@
 				<legend>Account Details</legend>
 				@Html.ValidationSummary()
 				<div class="form-group">
-					@Html.LabelFor(m => m.DisplayName, new { @class = "control-label col-md-2" })
-					<div class="col-md-10">
+					@Html.LabelFor(m => m.DisplayName, new { @class = "control-label col-md-3" })
+					<div class="col-md-9">
 						@Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control" })
 						@Html.ValidationMessageFor(m => m.DisplayName)
 					</div>
 				</div>
 				<div class="form-group">
-					@Html.LabelFor(m => m.Email, new { @class = "control-label col-md-2" })
-					<div class="col-md-10">
+					@Html.LabelFor(m => m.Email, new { @class = "control-label col-md-3" })
+					<div class="col-md-9">
 						@Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
 						@Html.ValidationMessageFor(m => m.Email)
 					</div>
 				</div>
+			</fieldset>
+			<fieldset>
+				<legend>Notification Preferences</legend>
 				<div class="form-group">
-					<div class="col-md-10 col-md-offset-2">
-						<button type="submit" class="btn btn-primary">Save Changes</button>
+					<label class="control-label col-md-3">Send me an email when</label>
+					<div class="col-md-9">
+						<label class="checkbox">@Html.CheckBoxFor(m => m.NotifyDirectMessages) @Html.DisplayNameFor(m => m.NotifyDirectMessages)</label>
+						<label class="checkbox">@Html.CheckBoxFor(m => m.NotifyAskAndAnswer) @Html.DisplayNameFor(m => m.NotifyAskAndAnswer)</label>
 					</div>
 				</div>
 			</fieldset>
+			<div class="form-group">
+				<div class="col-md-9 col-md-offset-3">
+					<button type="submit" class="btn btn-primary">Save Changes</button>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        @Html.Partial("_ChangePasswordPartial", new ChangePasswordViewModel())
-    </div>
-</div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

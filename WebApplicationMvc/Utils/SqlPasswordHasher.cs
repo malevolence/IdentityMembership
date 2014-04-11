@@ -5,11 +5,14 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using WebApplicationMvc.Models;
 
 namespace WebApplicationMvc.Utils
 {
 	public class SqlPasswordHasher : PasswordHasher
 	{
+		public ApplicationDbContext DbContext { get; set; }
+
 		public override string HashPassword(string password)
 		{
 			return base.HashPassword(password);
@@ -33,7 +36,9 @@ namespace WebApplicationMvc.Utils
 
 				if (string.Equals(encryptedPassword, passwordHash, StringComparison.CurrentCultureIgnoreCase))
 				{
-					return PasswordVerificationResult.SuccessRehashNeeded;
+					// Rehash the password
+					ReHashPassword(hashedPassword, providedPassword);
+					return PasswordVerificationResult.Success;
 				}
 				else
 				{
@@ -90,6 +95,18 @@ namespace WebApplicationMvc.Utils
 			}
 
 			return Convert.ToBase64String(bRet);
+		}
+
+		// Rehash password using the new Identity Crypto
+		private void ReHashPassword(string hashedPassword, string providedPassword)
+		{
+			var user = DbContext.Users.Where(x => x.PasswordHash == hashedPassword).FirstOrDefault();
+			if (user != null)
+			{
+				user.PasswordHash = base.HashPassword(providedPassword);
+				user.SecurityStamp = Guid.NewGuid().ToString();
+				DbContext.SaveChanges();
+			}
 		}
 	}
 }

@@ -2,17 +2,15 @@
 @if (Request.IsAuthenticated) {
 	var manager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 	var currentUser = manager.FindById(Guid.Parse(User.Identity.GetUserId()));
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-    @Html.AntiForgeryToken()
-
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Hello " + currentUser.DisplayName ?? "Registered User" + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
-    }
+	<form method="post" action="@Url.Action("Logoff", "Account")" id="logoutForm" class="navbar-right">
+		@Html.AntiForgeryToken()
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				@Html.ActionLink("Hello " + (currentUser != null ? currentUser.DisplayName ?? "Registered User" + "!" : ""), "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+			</li>
+			<li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+		</ul>
+	</form>
 } else {
     <ul class="nav navbar-nav navbar-right">
         <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>

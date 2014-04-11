@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin.Security;
 using WebApplicationMvc.Models;
 using WebApplicationMvc.Utils;
 
@@ -129,7 +126,7 @@ namespace WebApplicationMvc.Controllers
                 {
 					var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					var callBackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, Request.Url.Scheme);
-					await UserManager.SendEmailAsync(user.Id, "Confirm Your Account", "Please confirm your account by clicking this link: " + callBackUrl);
+					await UserManager.SendEmailAsync(user.Id, "Confirm Your Account", "Please confirm your account by clicking this link: <a href=\"" + callBackUrl + "\">Confirm Email</a>");
 					return View("CheckMail");
 					//await SignInHelper.SignInAsync(user, false);
 					//return RedirectToAction("Index", "Home");
@@ -154,8 +151,12 @@ namespace WebApplicationMvc.Controllers
 			var result = await UserManager.ConfirmEmailAsync(userId, code);
 			if (result.Succeeded)
 			{
+				UserManager.AddToRole(userId, "Users");
+
 				var user = UserManager.FindById(userId);
 				user.EmailConfirmed = true;
+				UserManager.Update(user);
+
 				TempData["success"] = "Your email was confirmed successfully";
 			}
 			else
@@ -190,7 +191,7 @@ namespace WebApplicationMvc.Controllers
 				{
 					var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					var callBackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, Request.Url.Scheme);
-					await UserManager.SendEmailAsync(user.Id, "Confirm Your Account", "Please confirm your account by clicking this link: " + callBackUrl);
+					await UserManager.SendEmailAsync(user.Id, "Confirm Your Account", "Please confirm your account by clicking this link: <a href=\"" + callBackUrl + "\">Confirm Email</a>");
 					return View("CheckMail");
 				}
 			}
@@ -236,7 +237,7 @@ namespace WebApplicationMvc.Controllers
 		public ActionResult Manage()
 		{
 			var user = UserManager.FindById(Guid.Parse(User.Identity.GetUserId()));
-			var model = new ManageUserViewModel { Email = user.Email, DisplayName = user.DisplayName };
+			var model = new ManageUserViewModel { Email = user.Email, DisplayName = user.DisplayName, NotifyDirectMessages = user.NotifyDirectMessages, NotifyAskAndAnswer = user.NotifyAskAndAnswer };
 			return View(model);
 		}
 
@@ -252,6 +253,9 @@ namespace WebApplicationMvc.Controllers
 				{
 					user.DisplayName = model.DisplayName.Trim();
 					user.Email = model.Email.ToLower();
+					user.NotifyDirectMessages = model.NotifyDirectMessages;
+					user.NotifyAskAndAnswer = model.NotifyAskAndAnswer;
+
 					var result = await UserManager.UpdateAsync(user);
 					if (result == IdentityResult.Success)
 					{
@@ -272,6 +276,11 @@ namespace WebApplicationMvc.Controllers
 			return View(model);
 		}
 
+		public ActionResult ChangePassword()
+		{
+			return View();
+		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -289,6 +298,70 @@ namespace WebApplicationMvc.Controllers
 				}
 			}
 			return RedirectToAction("Manage");
+		}
+
+		public ActionResult MyRoles()
+		{
+			var roleManager = ApplicationRoleManager.Create(null, HttpContext.GetOwinContext());
+			ViewBag.PossibleRoles = roleManager.Roles.Select(x => new SelectListItem
+			{
+				Text = x.Name,
+				Value = x.Name
+			});
+
+			var roles = UserManager.GetRoles(Guid.Parse(User.Identity.GetUserId()));
+			return View(roles);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> AddUserToRole(string role)
+		{
+			// add user to the "users" role
+			if (!string.IsNullOrEmpty(role))
+			{
+				var result = await UserManager.AddToRoleAsync(Guid.Parse(User.Identity.GetUserId()), role);
+
+				if (result.Succeeded)
+				{
+					TempData["success"] = "User added to role: " + role;
+				}
+				else
+				{
+					AddErrors(result);
+				}
+			}
+			else
+			{
+				TempData["error"] = "No role selected.";
+			}
+
+			return RedirectToAction("MyRoles");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> RemoveUserFromRole(string role)
+		{
+			// add user to the "users" role
+			if (!string.IsNullOrEmpty(role))
+			{
+				var result = await UserManager.RemoveFromRoleAsync(Guid.Parse(User.Identity.GetUserId()), role);
+				if (result.Succeeded)
+				{
+					TempData["success"] = "User removed from role: " + role;
+				}
+				else
+				{
+					AddErrors(result);
+				}
+			}
+			else
+			{
+				TempData["error"] = "No role selected.";
+			}
+
+			return RedirectToAction("MyRoles");
 		}
 
 		////

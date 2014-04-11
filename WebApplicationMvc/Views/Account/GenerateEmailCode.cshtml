@@ -3,8 +3,6 @@
     ViewBag.Title = "Generate Email Verification Code";
 }
 
-<h2>@ViewBag.Title</h2>
-
 <form method="post" action="@Url.Action("GenerateEmailCode")" role="form" class="form-horizontal">
 	@Html.AntiForgeryToken()
 	<fieldset>
