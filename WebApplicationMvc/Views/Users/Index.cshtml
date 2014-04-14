@@ -45,6 +45,7 @@
 	<table class="table table-hover table-striped table-condensed">
 		<thead>
 			<tr>
+				<th></th>
 				<th>Id</th>
 				<th>Username</th>
 				<th>Email</th>
@@ -54,6 +55,7 @@
 		<tbody>
 		@foreach (var user in Model.Results) {
 			<tr>
+				<td><a href="@Url.Action("Details", "Users", new { username = user.UserName })" title="edit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
 				<td>@user.Id</td>
 				<td>@user.UserName</td>
 				<td>@user.Email</td>

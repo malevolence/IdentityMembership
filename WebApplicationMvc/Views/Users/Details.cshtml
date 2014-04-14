@@ -1,0 +1,35 @@
+﻿@model WebApplicationMvc.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "User Details";
+}
+
+<form method="get" action="@Url.Action("Edit", "Users")" class="form-horizontal" role="form">
+	@Html.HiddenFor(m => m.UserName)
+	<fieldset>
+		<legend>Membership Details</legend>
+		<div class="form-group">
+			<span class="control-label col-md-3">Id</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.Id</p></div>
+		</div>
+		<div class="form-group">
+			<span class="control-label col-md-3">Username</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.UserName</p></div>
+		</div>
+		<div class="form-group">
+			<span class="control-label col-md-3">Email</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.Email</p></div>
+		</div>
+		<div class="form-group">
+			<span class="control-label col-md-3">Display Name</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.DisplayName</p></div>
+		</div>
+		<div class="form-group">
+			<span class="control-label col-md-3">Comment</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.Comment</p></div>
+		</div>
+	</fieldset>
+	<div class="form-group">
+		<div class="col-md-9 col-md-offset-3"><button type="submit" class="btn btn-primary">Edit User</button></div>
+	</div>
+</form>

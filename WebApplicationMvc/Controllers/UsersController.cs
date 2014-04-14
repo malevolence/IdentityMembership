@@ -39,6 +39,18 @@ namespace WebApplicationMvc.Controllers
 			return View(search);
 		}
 
+		public async Task<ActionResult> Details(string username)
+		{
+			var user = await UserManager.FindByNameAsync(username);
+			return View(user);
+		}
+
+		public async Task<ActionResult> Edit(string username)
+		{
+			var user = await UserManager.FindByNameAsync(username);
+			return View(user);
+		}
+
 		private IQueryable<ApplicationUser> BuildSearchQuery(SearchUsers search)
 		{
 			var query = UserManager.Users;

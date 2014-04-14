@@ -1,0 +1,46 @@
+﻿@model WebApplicationMvc.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "User Details";
+}
+
+<form method="post" action="@Url.Action("Edit", "Users")" class="form-horizontal" role="form">
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.Id)
+	@Html.HiddenFor(m => m.UserName)
+	<fieldset>
+		<legend>Membership Details</legend>
+		<div class="form-group">
+			<span class="control-label col-md-3">Id</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.Id</p></div>
+		</div>
+		<div class="form-group">
+			<span class="control-label col-md-3">Username</span>
+			<div class="col-md-9"><p class="form-control-static">@Model.UserName</p></div>
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Email, new { @class = "control-label col-md-3"})
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Email)
+			</div>
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.DisplayName, new { @class = "control-label col-md-3" })
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.DisplayName)
+			</div>
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Comment, new { @class = "control-label col-md-3" })
+			<div class="col-md-9">
+				@Html.TextAreaFor(m => m.Comment, new { @class = "form-control", rows = 5 })
+				@Html.ValidationMessageFor(m => m.Comment)
+			</div>
+		</div>
+	</fieldset>
+	<div class="form-group">
+		<div class="col-md-9 col-md-offset-3"><button type="submit" class="btn btn-primary">Save Changes</button></div>
+	</div>
+</form>
