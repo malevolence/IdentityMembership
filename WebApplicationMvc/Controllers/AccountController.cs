@@ -57,7 +57,20 @@ namespace WebApplicationMvc.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-            return View();
+            
+			if (User.Identity.IsAuthenticated)
+			{
+				if (!string.IsNullOrEmpty(returnUrl))
+				{
+					return View("NoAccess");
+				}
+				else
+				{
+					TempData["info"] = "You are already authenticated. No need to login again.";
+					return RedirectToAction("Index", "Home");
+				}
+			}
+			return View();
         }
 
         //
@@ -73,7 +86,7 @@ namespace WebApplicationMvc.Controllers
 				switch (result)
 				{
 					case SignInStatus.Success:
-						return RedirectToAction("Index", "Home");
+						return RedirectToLocal(returnUrl);
 					case SignInStatus.LockedOut:
 						return RedirectToAction("Lockout");
 					case SignInStatus.Disabled:
@@ -421,15 +434,14 @@ namespace WebApplicationMvc.Controllers
 			return RedirectToAction("MyRoles");
 		}
 
-		protected override void Dispose(bool disposing)
-        {
-            if (disposing && UserManager != null)
-            {
-                UserManager.Dispose();
-                UserManager = null;
-            }
-            base.Dispose(disposing);
-        }
+		private ActionResult RedirectToLocal(string returnUrl)
+		{
+			if (Url.IsLocalUrl(returnUrl))
+			{
+				return Redirect(returnUrl);
+			}
+			return RedirectToAction("Index", "Home");
+		}
 
 		private void AddErrors(IdentityResult result)
         {
@@ -438,5 +450,15 @@ namespace WebApplicationMvc.Controllers
                 ModelState.AddModelError("", error);
             }
         }
-    }
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && UserManager != null)
+			{
+				UserManager.Dispose();
+				UserManager = null;
+			}
+			base.Dispose(disposing);
+		}
+	}
 }

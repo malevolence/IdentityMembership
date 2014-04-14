@@ -11,6 +11,7 @@ using WebApplicationMvc.Utils;
 
 namespace WebApplicationMvc.Controllers
 {
+	[Authorize(Roles = "Employees")]
     public class UsersController : Controller
     {
 		private ApplicationUserManager _userManager;

@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-8">
-		<form method="post" action="@Url.Action("Login", "Account")" class="form-horizontal" role="form">
+		<form method="post" action="@Url.Action("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl })" class="form-horizontal" role="form">
 			@Html.AntiForgeryToken()
 			@Html.ValidationSummary(true)
 			<fieldset>
