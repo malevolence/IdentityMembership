@@ -37,9 +37,8 @@
                         <button type="submit" class="btn btn-primary">Sign In</button>
                     </div>
                 </div>
-                <p>
-                    @Html.ActionLink("Register", "Register") if you don't have a local account.
-                </p>
+				<p><a href="@Url.Action("ForgotPassword", "Account")">Forgot Password?</a></p>
+                <p>@Html.ActionLink("Register", "Register") if you don't have a local account.</p>
             }
         </section>
     </div>
