@@ -120,3 +120,8 @@ C:\Projects\IdentityMembership\WebApplicationMvc\bin\System.Web.WebPages.Razor.x
 C:\Projects\IdentityMembership\WebApplicationMvc\obj\Debug\WebApplicationMvc.csprojResolveAssemblyReference.cache
 C:\Projects\IdentityMembership\WebApplicationMvc\obj\Debug\WebApplicationMvc.dll
 C:\Projects\IdentityMembership\WebApplicationMvc\obj\Debug\WebApplicationMvc.pdb
+C:\Users\Bill\Desktop\WebApplicationMvc\WebApplicationMvc\bin\Microsoft.Owin.Cors.dll
+C:\Users\Bill\Desktop\WebApplicationMvc\WebApplicationMvc\bin\System.Web.Cors.dll
+C:\Users\Bill\Desktop\WebApplicationMvc\WebApplicationMvc\bin\Microsoft.Owin.Cors.xml
+C:\Users\Bill\Desktop\WebApplicationMvc\WebApplicationMvc\bin\System.Web.Http.WebHost.dll
+C:\Users\Bill\Desktop\WebApplicationMvc\WebApplicationMvc\bin\System.Web.Http.WebHost.xml

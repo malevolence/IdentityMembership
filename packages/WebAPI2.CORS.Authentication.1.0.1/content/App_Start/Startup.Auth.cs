@@ -7,9 +7,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
-using Microsoft.AspNet.Identity.Owin;
-using WebApplicationMvc.Models;
-using WebApplicationMvc.Models.Identity;
+using CorsApi.Providers;
 
 namespace CorsApi
 {
@@ -19,10 +17,12 @@ namespace CorsApi
         {
             PublicClientId = "self";
 
-			OAuthOptions = new OAuthAuthorizationServerOptions
+            UserManagerFactory = () => new UserManager<IdentityUser>(new UserStore<IdentityUser>());
+
+            OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 TokenEndpointPath = new PathString("/Token"),
-                Provider = new ApplicationOAuthProvider(PublicClientId),
+                Provider = new ApplicationOAuthProvider(PublicClientId, UserManagerFactory),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                 AllowInsecureHttp = true
@@ -31,30 +31,17 @@ namespace CorsApi
 
         public static OAuthAuthorizationServerOptions OAuthOptions { get; private set; }
 
+        public static Func<UserManager<IdentityUser>> UserManagerFactory { get; set; }
+
         public static string PublicClientId { get; private set; }
 
         // For more information on configuring authentication, please visit http://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
-			// Configure db context, role manager and user manager to use single instance per request
-			app.CreatePerOwinContext<ApplicationDbContext>(ApplicationDbContext.Create);
-			app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
-			app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
-
-			// Enable the application to use a cookie to store information for the signed in user
-			app.UseCookieAuthentication(new CookieAuthenticationOptions
-			{
-				AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-				LoginPath = new PathString("/Account/Login"),
-				Provider = new CookieAuthenticationProvider
-				{
-					OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser, Guid>(
-						TimeSpan.FromMinutes(20),
-						(manager, user) => user.GenerateUserIdentityAsync(manager),
-						(id) => Guid.Parse(id.GetUserId())
-					)
-				}
-			});
+            // Enable the application to use a cookie to store information for the signed in user
+            // and to use a cookie to temporarily store information about a user logging in with a third party login provider
+            app.UseCookieAuthentication(new CookieAuthenticationOptions());
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthBearerTokens(OAuthOptions);
